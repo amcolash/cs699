@@ -7,18 +7,17 @@
 CC = gcc
 args = -O -Wall
 
-all:: squares
+all:: test
 
-squares: least_squares.c
-	$(CC) $(args) -o squares least_squares.c
+least_squares: least_squares.c
+	$(CC) $(args) -o least_squares least_squares.c
 
-test: squares
-	./squares
+test: least_squares
+	./least_squares test.txt
 
 ###
 # clean workspace
 ###
 clean::
-	rm -f squares
-
+	rm -f least_squares
 

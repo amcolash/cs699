@@ -1,5 +1,6 @@
 #include <math.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 typedef struct {
   float x;
@@ -41,39 +42,54 @@ void squares(point pointArray[], int size) {
   return;
 }
 
-int main () {
-  int size = 8;
-  point pointArray[size];
+int main (int argc, char *argv[]) {
+  int lines = -1;
+  int ch;
+  float t, id, x, y, r;
+  FILE *fp;
+  char buffer1[20], buffer2[20], buffer3[20], buffer4[20], buffer5[20];
 
-  pointArray[0].x = 65;
-  pointArray[1].x = 65;
-  pointArray[2].x = 62;
-  pointArray[3].x = 67;
-  pointArray[4].x = 69;
-  pointArray[5].x = 65;
-  pointArray[6].x = 61;
-  pointArray[7].x = 67;
-
-  pointArray[0].y = 105;
-  pointArray[1].y = 125;
-  pointArray[2].y = 110;
-  pointArray[3].y = 120;
-  pointArray[4].y = 140;
-  pointArray[5].y = 135;
-  pointArray[6].y = 95;
-  pointArray[7].y = 130;
-
-/*
-  int i;
-  int size = 100;
-
-  for (i = 0; i < size; i++) {
-    pointArray[i].x = i;
-    pointArray[i].y = i;
+  if (argc != 2) {
+    printf("Usage: least_squares in_file.txt\n");
+    exit(1);
   }
-*/
 
-  squares(pointArray, size);
+  fp = fopen(argv[1], "r");
 
-  return 0;
+  if (fp == NULL) {
+    exit(1);
+  }
+
+  while(!feof(fp)) {
+    ch = fgetc(fp);
+    if(ch == '\n') {
+      lines++;
+    }
+  }
+  printf("%d\n", lines);
+
+  rewind(fp);
+
+  point *pointArray;
+  pointArray = malloc(lines*sizeof(point));
+
+  int count = -1;
+
+  while(count < lines) {
+    if (count >= 0) {
+      fscanf(fp, "%f %f %f %f %f\n", &t, &id, &x, &y, &r);
+      pointArray[count].x = x;
+      pointArray[count].y = y;
+    } else {
+      fscanf(fp, "%s %s %s %s %s\n", buffer1, buffer2, buffer3, buffer4, buffer5);
+    }
+    count++;
+  }
+
+  squares(pointArray, lines);
+
+  free(pointArray);
+  fclose(fp);
+
+  exit(0);
 }
